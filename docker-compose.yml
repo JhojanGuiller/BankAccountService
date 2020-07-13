@@ -1,0 +1,16 @@
+mymongodb:
+ image: mongo:latest
+ restart: always
+ container_name: "mymongodb"
+ ports:
+  - "27017:27017"
+
+bankaccountservice:
+ build: .
+ dockerfile: Dockerfile
+ container_name: bankaccountservice
+ ports:
+  - "8081:8080"
+ links:
+  - mymongodb
+ 
