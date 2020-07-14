@@ -38,17 +38,17 @@ public class BankAccountController {
 	
 //	Actualizar el monto de la cuenta bancaria
 	@PutMapping("/updateBankAccountAmount/{idCuenta}/{tipoOperacion}")
-	public String updateBankAccount(@PathVariable int idCuenta, @PathVariable String tipoOperacion, @RequestParam float monto) {
+	public String updateBankAccount(@PathVariable int idCuenta, @PathVariable String tipoOperacion, @RequestParam Double monto) {
 		BankAccount bankAccount = bankAccountRepository.findByIdCuenta(idCuenta);
 		
 		if(tipoOperacion.equals("Deposito")) {		
 			
-			Float opeDeposito = bankAccount.getMontoCuenta() + monto;
+			Double opeDeposito = bankAccount.getMontoCuenta() + monto;
 			bankAccount.setMontoCuenta(opeDeposito);
 			
 		}else if (tipoOperacion.equals("Retiro")) {
 			
-			Float opeRetiro = bankAccount.getMontoCuenta() - monto;
+			Double opeRetiro = bankAccount.getMontoCuenta() - monto;
 			bankAccount.setMontoCuenta(opeRetiro);
 			
 		}else {

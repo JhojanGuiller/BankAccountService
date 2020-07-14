@@ -21,7 +21,7 @@ public class BankAccount {
 	@NotNull
 	private int idProducto;
 	
-	private float montoCuenta;
+	private Double montoCuenta;
 	
 	private String fechaCreacionCuenta;
 	
@@ -51,11 +51,11 @@ public class BankAccount {
 		this.idProducto = idProducto;
 	}
 
-	public float getMontoCuenta() {
+	public Double getMontoCuenta() {
 		return montoCuenta;
 	}
 
-	public void setMontoCuenta(float montoCuenta) {
+	public void setMontoCuenta(Double montoCuenta) {
 		this.montoCuenta = montoCuenta;
 	}
 
@@ -67,7 +67,7 @@ public class BankAccount {
 		this.fechaCreacionCuenta = fechaCreacionCuenta;
 	}
 
-	public BankAccount(@NotNull int idCuenta, @NotNull int idCliente, @NotNull int idProducto, float montoCuenta,
+	public BankAccount(@NotNull int idCuenta, @NotNull int idCliente, @NotNull int idProducto, Double montoCuenta,
 			String fechaCreacionCuenta) {
 		super();
 		this.idCuenta = idCuenta;
