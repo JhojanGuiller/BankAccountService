@@ -1,13 +1,14 @@
 package com.jguiller.BankAccountService.Controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jguiller.BankAccountService.Model.BankAccount;
@@ -31,8 +32,30 @@ public class BankAccountController {
 	}
 	
 	@GetMapping("/findBankAccount/{idCuenta}")
-	public Optional<BankAccount> getBankAccount(@PathVariable int idCuenta){
+	public BankAccount getBankAccount(@PathVariable int idCuenta){
 		return bankAccountRepository.findByIdCuenta(idCuenta);
+	}
+	
+//	Actualizar el monto de la cuenta bancaria
+	@PutMapping("/updateBankAccountAmount/{idCuenta}/{tipoOperacion}")
+	public String updateBankAccount(@PathVariable int idCuenta, @PathVariable String tipoOperacion, @RequestParam float monto) {
+		BankAccount bankAccount = bankAccountRepository.findByIdCuenta(idCuenta);
+		
+		if(tipoOperacion.equals("Deposito")) {		
+			
+			Float opeDeposito = bankAccount.getMontoCuenta() + monto;
+			bankAccount.setMontoCuenta(opeDeposito);
+			
+		}else if (tipoOperacion.equals("Retiro")) {
+			
+			Float opeRetiro = bankAccount.getMontoCuenta() - monto;
+			bankAccount.setMontoCuenta(opeRetiro);
+			
+		}else {
+			return "Ingrese una operacion correcta";
+		}		
+		bankAccountRepository.save(bankAccount);
+		return "Updated Bank Account Successfully: " + bankAccount.getIdCuenta();
 	}
 	
 	@GetMapping("/deleteBankAccount/{idCuenta}")
