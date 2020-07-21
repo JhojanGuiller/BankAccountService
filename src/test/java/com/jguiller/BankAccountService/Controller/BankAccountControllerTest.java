@@ -77,8 +77,8 @@ public class BankAccountControllerTest {
 	@Test
 	public void updateBankAccountTest() {
 		
-		BankAccount bankAcc1 = new BankAccount();
-		BankAccount bankAcc2 = new BankAccount();
+		BankAccount bankAcc1 = new BankAccount(1, 1, 1, 100.0, "21/07/2020");
+		BankAccount bankAcc2 = new BankAccount(1, 1, 1, 150.0, "21/07/2020");
 		
 		webTestClient
 		.put()
