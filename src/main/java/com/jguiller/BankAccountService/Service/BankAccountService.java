@@ -30,21 +30,19 @@ public class BankAccountService {
 	}
 
 	// OBTENER UNA CUENTA BANCARIA POR ID	
-	public Mono<ResponseEntity<BankAccount>> getBankAccountById(Integer id) {
-		return bankAccountRepository.findById(id)
-				.map(bankAcc -> new ResponseEntity<BankAccount>(bankAcc, HttpStatus.OK))
-				.defaultIfEmpty(notFound);
+	public Mono<BankAccount> getBankAccountById(Integer id) {
+		return bankAccountRepository.findById(id);
 	}
 
 	// ACTUALIZAR UN CUENTA BANCARIA
-	public Mono<ResponseEntity<BankAccount>> updateBankAccount(BankAccount bankAccount, Integer id) {
+	public Mono<BankAccount> updateBankAccount(BankAccount bankAccount, Integer id) {
 		return bankAccountRepository.findById(id).flatMap(bankAcc -> {
 			bankAcc.setIdCliente(bankAccount.getIdCliente());
 			bankAcc.setIdProducto(bankAccount.getIdProducto());
 			bankAcc.setMontoCuenta(bankAccount.getMontoCuenta());
 			bankAcc.setFechaCreacionCuenta(bankAccount.getFechaCreacionCuenta());
 			return bankAccountRepository.save(bankAcc);
-		}).map(bankAcc1 -> new ResponseEntity<BankAccount>(bankAcc1, HttpStatus.OK)).defaultIfEmpty(notFound);
+		});
 	}
 
 	// ACTUALIZAR EL MONTO DE UNA CUENTA BANCARIA POR TIPO DE OPERACION

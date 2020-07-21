@@ -39,13 +39,13 @@ public class BankAccountController {
 	
 	// OBTENER UNA CUENTA BANCARIA POR ID	
 	@GetMapping("/{idCuenta}")
-	public Mono<ResponseEntity<BankAccount>> getBankAccount(@PathVariable(value = "idCuenta") int id){
+	public Mono<BankAccount> getBankAccount(@PathVariable(value = "idCuenta") int id){
 		return bankAccountService.getBankAccountById(id);
 	}
 	
 	// ACTUALIZAR UN CUENTA BANCARIA
 	@PutMapping("/updateBankAccount/{idCuenta}")
-	public Mono<ResponseEntity<BankAccount>> updateBankAccount(@RequestBody BankAccount bankAccount, @PathVariable(value = "idCuenta") int id) {
+	public Mono<BankAccount> updateBankAccount(@RequestBody BankAccount bankAccount, @PathVariable(value = "idCuenta") int id) {
 		return bankAccountService.updateBankAccount(bankAccount, id);
 	}
 	
