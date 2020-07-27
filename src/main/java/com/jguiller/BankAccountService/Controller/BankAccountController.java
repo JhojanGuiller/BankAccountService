@@ -62,4 +62,14 @@ public class BankAccountController {
 		return bankAccountService.deleteBankAccount(id);
 	}
 	
+	
+	// ------------- START CUSTOM METHODS ------------
+	
+	@GetMapping("/client/{idCliente}")
+	public BankAccount getBankAccByIdClient(@PathVariable(value = "idCliente") int id){
+		return bankAccountService.getBankAccountByIdCliente(id);
+	}
+	
+	// ------------- END CUSTOM METHODS --------------
+	
 }

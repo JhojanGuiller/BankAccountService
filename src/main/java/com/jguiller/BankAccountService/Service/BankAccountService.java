@@ -1,5 +1,7 @@
 package com.jguiller.BankAccountService.Service;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,32 @@ public class BankAccountService {
 	public Mono<BankAccount> addBankAccount(BankAccount bankAccount) {
 		return bankAccountRepository.save(bankAccount);
 	}
+	
+	// ----------- START CUSTOM METHODS -----------------
+	
+	//OBTENER UNA CUENTA BANCARIA POR IDCLIENTE
+	public BankAccount getBankAccountByIdCliente(Integer id) {
+		return bankAccountRepository.findByIdCliente(id).block();
+	}
+	
+	public Mono<BankAccount> addBankAccountCustom(BankAccount bankAccount) throws Exception {
+		
+		// Si tipoCliente = Personal, solo puede tener 1 cuentaAhorro, 1 cuentaCorriente o 1 cuentaPlazoFijo
+		// Si idCliente = 1 => idProducto = 1, 2 o 3
+		BankAccount bankAcc = getBankAccountByIdCliente(bankAccount.getIdCliente());
+		if (bankAccount.getIdCliente() == 1 ) {
+			if(bankAcc.getIdProducto() == 1 || bankAcc.getIdProducto() == 2 || bankAcc.getIdProducto() == 3) {
+				throw new NoSuchElementException("Error 2020");
+			}else {
+				return bankAccountRepository.save(bankAccount);
+			}
+		}else {
+			return bankAccountRepository.save(bankAccount);
+		}
+		
+	}
+	
+	// ---------- END CUSTOM METHODS ------------
 
 	// OBTENER UNA CUENTA BANCARIA POR ID	
 	public Mono<BankAccount> getBankAccountById(Integer id) {
