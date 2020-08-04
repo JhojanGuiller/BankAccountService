@@ -73,11 +73,16 @@ public class BankAccountController {
 	
 	//OBTENER LA CUENTA BANCARIA POR ID DE CLIENTE
 	@GetMapping("/client/{idCliente}")
-	public BankAccount getBankAccByIdClient(@PathVariable(value = "idCliente") int id){
+	public Flux<BankAccount> getBankAccByIdClient(@PathVariable(value = "idCliente") int id){
 		return bankAccountService.getBankAccountByIdCliente(id);
 	}
 
 // ------------- END CUSTOM METHODS --------------
+	
+	@PostMapping("/addBankAccCustom")
+	public Mono<BankAccount> addBankAcc(@RequestBody BankAccount bankAccount) {
+		return bankAccountService.addBankAccountsCustom(bankAccount);
+	}
 	
 // ------------- START CALL EXTERNAL MICROSERVICE ---------------
 		

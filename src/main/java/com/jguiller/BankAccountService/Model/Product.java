@@ -7,7 +7,12 @@ import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Document(collection = "Products")
+@Data @NoArgsConstructor @AllArgsConstructor
 public class Product {
 	@Id
 	@NotNull
@@ -17,38 +22,4 @@ public class Product {
 	private String tipoProducto;
 	private String producto;
 	
-	public Product() {	}
-
-	public int getIdProducto() {
-		return idProducto;
-	}
-
-	public void setIdProducto(int idProducto) {
-		this.idProducto = idProducto;
-	}
-
-	public String getTipoProducto() {
-		return tipoProducto;
-	}
-
-	public void setTipoProducto(String tipoProducto) {
-		this.tipoProducto = tipoProducto;
-	}
-
-	public String getProducto() {
-		return producto;
-	}
-
-	public void setProducto(String producto) {
-		this.producto = producto;
-	}
-
-	public Product(@NotNull int idProducto, String tipoProducto, String producto) {
-		super();
-		this.idProducto = idProducto;
-		this.tipoProducto = tipoProducto;
-		this.producto = producto;
-	}
-	
-
 }

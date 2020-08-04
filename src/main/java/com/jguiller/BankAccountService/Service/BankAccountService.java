@@ -1,13 +1,17 @@
 package com.jguiller.BankAccountService.Service;
 
-import java.util.NoSuchElementException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.jguiller.BankAccountService.Model.BankAccount;
+import com.jguiller.BankAccountService.Model.Client;
+import com.jguiller.BankAccountService.Model.Product;
 import com.jguiller.BankAccountService.Repository.BankAccountRepository;
 
 import reactor.core.publisher.Flux;
@@ -19,7 +23,32 @@ public class BankAccountService {
 	@Autowired
 	private BankAccountRepository bankAccountRepository;
 	
+	@Autowired
+	private WebClient.Builder webClientBuilder;
+	
 	private ResponseEntity<BankAccount> notFound = ResponseEntity.notFound().build();
+	
+// ------------- START CALL EXTERNAL MICROSERVICE ---------------
+	
+	//LLAMAR AL MICROSERVICE DE CLIENTE POR EL IDCLIENTE
+	public Mono<Client> getClient(@PathVariable(value = "idCliente") int id){
+		return webClientBuilder.build()
+								.get()
+								.uri("http://localhost:8801/clients/" + id)
+								.retrieve()
+								.bodyToMono(Client.class);
+	}
+		
+	//LLAMAR AL MICROSERVICE DE PRODUCTO POR EL IDPRODUCTO
+	public Mono<Product> getProduct(@PathVariable(value = "idProducto") int id){
+		return webClientBuilder.build()
+								.get()
+								.uri("http://localhost:8802/products/" + id)
+								.retrieve()
+								.bodyToMono(Product.class);
+	}
+		
+// ------------- END CALL EXTERNAL MICROSERVICE -----------------		
 	
 	// OBTENER TODAS LA CUENTAS BANCARIAS
 	public Flux<BankAccount> getAllBankAccounts() {
@@ -31,31 +60,46 @@ public class BankAccountService {
 		return bankAccountRepository.save(bankAccount);
 	}
 	
-	// ----------- START CUSTOM METHODS -----------------
+// ----------- START CUSTOM METHODS -----------------
 	
 	//OBTENER UNA CUENTA BANCARIA POR IDCLIENTE
-	public BankAccount getBankAccountByIdCliente(Integer id) {
-		return bankAccountRepository.findByIdCliente(id).block();
+	public Flux<BankAccount> getBankAccountByIdCliente(Integer id) {
+		return bankAccountRepository.findByIdCliente(id);
 	}
 	
-	public Mono<BankAccount> addBankAccountCustom(BankAccount bankAccount) throws Exception {
+	public Mono<List<BankAccount>> getBankAccountByIdClienteBlock(Integer id) {
+		return getBankAccountByIdCliente(id).collectList();
+	}
+	
+	// CREACION DE UNA CUENTA BANCARIA CON VERIFICACION
+	public Mono<BankAccount> addBankAccountsCustom(BankAccount bankAccount){
 		
-		// Si tipoCliente = Personal, solo puede tener 1 cuentaAhorro, 1 cuentaCorriente o 1 cuentaPlazoFijo
-		// Si idCliente = 1 => idProducto = 1, 2 o 3
-		BankAccount bankAcc = getBankAccountByIdCliente(bankAccount.getIdCliente());
-		if (bankAccount.getIdCliente() == 1 ) {
-			if(bankAcc.getIdProducto() == 1 || bankAcc.getIdProducto() == 2 || bankAcc.getIdProducto() == 3) {
-				throw new NoSuchElementException("Error 2020");
+		//Mono<List<BankAccount>> bankAcc = getBankAccountByIdClienteBlock(bankAccount.getIdCliente());
+		
+		Client client = getClient(bankAccount.getIdCliente()).block();
+		if (client.getTipoCliente() == "Personal") {
+			if (bankAccount.getIdProducto() == 1 || bankAccount.getIdProducto() == 2 || bankAccount.getIdProducto() == 3) {
+//				if (bankAcc != bankAccount.getIdProducto()) {
+//					return bankAccountRepository.save(bankAccount);
+//				}else {
+					return null; // Pendiente configurar un mensaje de error adecuado
+				//}
+			}else {
+				return bankAccountRepository.save(bankAccount);
+			}
+		}else if (client.getTipoCliente() == "Empresarial") {
+			if (bankAccount.getIdProducto() == 1 || bankAccount.getIdProducto() == 3) {
+				return null; // Pendiente configurar un mensaje de error adecuado
 			}else {
 				return bankAccountRepository.save(bankAccount);
 			}
 		}else {
 			return bankAccountRepository.save(bankAccount);
 		}
-		
+			
 	}
 	
-	// ---------- END CUSTOM METHODS ------------
+// ---------- END CUSTOM METHODS ------------
 
 	// OBTENER UNA CUENTA BANCARIA POR ID	
 	public Mono<BankAccount> getBankAccountById(Integer id) {

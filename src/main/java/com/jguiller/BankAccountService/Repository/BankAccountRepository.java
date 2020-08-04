@@ -5,11 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import com.jguiller.BankAccountService.Model.BankAccount;
 
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Repository
 public interface BankAccountRepository extends ReactiveMongoRepository<BankAccount, Integer>{
 
-	Mono<BankAccount> findByIdCliente(Integer id);
+	Flux<BankAccount> findByIdCliente(Integer id);
 
 }

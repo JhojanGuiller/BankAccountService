@@ -11,6 +11,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.jguiller.BankAccountService.Model.BankAccount;
 import com.jguiller.BankAccountService.Service.BankAccountService;
 
+import reactor.core.publisher.Flux;
+
 @WebFluxTest
 public class CustomMethodsTest {
 
@@ -28,7 +30,7 @@ public class CustomMethodsTest {
 		
 		Mockito
 		.when(this.bankAccountService.getBankAccountByIdCliente(id))
-		.thenReturn(new BankAccount(2, 1, 3, 200.0, "24/07/2020"));
+		.thenReturn(Flux.just(new BankAccount(2, 1, 3, 200.0, "24/07/2020")));
 		
 		this.webTestClient
 		.get()
