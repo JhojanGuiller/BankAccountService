@@ -14,6 +14,7 @@ import com.jguiller.BankAccountService.Model.Client;
 import com.jguiller.BankAccountService.Model.Product;
 import com.jguiller.BankAccountService.Repository.BankAccountRepository;
 
+import javassist.NotFoundException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -58,6 +59,21 @@ public class BankAccountService {
 	// CREAR UNA CUENTA BANCARIA
 	public Mono<BankAccount> addBankAccount(BankAccount bankAccount) {
 		return bankAccountRepository.save(bankAccount);
+	}
+	
+	// CREAR UNA CUENTA BANCARIA DONDE TENGA UN MONTO MINIMO
+	public Mono<BankAccount> addBankAccountMinAmount(BankAccount bankAccount){
+		Product producto = (Product) getProduct(bankAccount.getIdProducto()).subscribe();
+		
+		if (producto.getProducto().equals("Ahorro personal VIP") || producto.getProducto().equals("Corriente personal VIP") || producto.getProducto().equals("Empresarial PYME") || producto.getProducto().equals("Empresarial Corporativo") || producto.getProducto().equals("A plazo fijo VIP")) {
+			if (bankAccount.getMontoCuenta() >= 50.0) {
+				return bankAccountRepository.save(bankAccount);
+			}else {
+				return Mono.error(new NotFoundException("El monto minimo de creacion para este tipo de perfil es S/. 50.0s")); //Configurar un msg de error adecuado ("El monto minimo de creacion para este tipo de perfil es S/. 50.0") 
+			}
+		}else {
+			return bankAccountRepository.save(bankAccount);
+		}
 	}
 	
 // ----------- START CUSTOM METHODS -----------------

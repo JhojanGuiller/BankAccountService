@@ -43,6 +43,12 @@ public class BankAccountController {
 		return bankAccountService.addBankAccount(bankAccount);
 	}
 	
+	// CREAR UNA CUENTA BANCARIA DONDE TENGA UN MONTO MINIMO
+	@PostMapping("/addBankAcc")
+	public Mono<BankAccount> saveBankAccountMinAmount(@RequestBody BankAccount bankAccount){
+		return bankAccountService.addBankAccountMinAmount(bankAccount);
+	}
+	
 	// OBTENER UNA CUENTA BANCARIA POR ID	
 	@GetMapping("/{idCuenta}")
 	public Mono<BankAccount> getBankAccount(@PathVariable(value = "idCuenta") int id){
