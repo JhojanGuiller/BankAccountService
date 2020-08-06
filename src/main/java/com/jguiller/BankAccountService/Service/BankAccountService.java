@@ -48,7 +48,7 @@ public class BankAccountService {
 								.retrieve()
 								.bodyToMono(Product.class);
 	}
-		
+	
 // ------------- END CALL EXTERNAL MICROSERVICE -----------------		
 	
 	// OBTENER TODAS LA CUENTAS BANCARIAS
@@ -63,7 +63,7 @@ public class BankAccountService {
 	
 	// CREAR UNA CUENTA BANCARIA DONDE TENGA UN MONTO MINIMO
 	public Mono<BankAccount> addBankAccountMinAmount(BankAccount bankAccount){
-		Product producto = (Product) getProduct(bankAccount.getIdProducto()).subscribe();
+		Product producto = getProduct(bankAccount.getIdProducto()).block();
 		
 		if (producto.getProducto().equals("Ahorro personal VIP") || producto.getProducto().equals("Corriente personal VIP") || producto.getProducto().equals("Empresarial PYME") || producto.getProducto().equals("Empresarial Corporativo") || producto.getProducto().equals("A plazo fijo VIP")) {
 			if (bankAccount.getMontoCuenta() >= 50.0) {
